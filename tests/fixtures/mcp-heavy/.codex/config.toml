@@ -1,0 +1,8 @@
+[mcp_servers.insecure]
+command = "uvx"
+args = ["some-mcp-server"]
+transport = "stdio"
+
+[mcp_servers.legacy]
+url = "http://legacy.internal/mcp"
+transport = "sse"
