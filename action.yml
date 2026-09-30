@@ -1,0 +1,120 @@
+name: surfacelock
+description: >-
+  Pin and gate the AI surface of your repository — models, prompts, tool
+  schemas and MCP servers. Fails the build when they change without review.
+author: surfacelock contributors
+
+branding:
+  icon: lock
+  color: purple
+
+inputs:
+  path:
+    description: Repository path to check.
+    required: false
+    default: "."
+  allow-drift:
+    description: >-
+      Report AI-surface drift without failing the build. Policy errors still
+      fail. Useful while adopting surfacelock on an existing repository.
+    required: false
+    default: "false"
+  comment:
+    description: >-
+      Post or update a sticky pull-request comment with the `explain` summary.
+      Requires `pull-requests: write`.
+    required: false
+    default: "false"
+  version:
+    description: Version of surfacelock to install.
+    required: false
+    default: "0.1.0"
+  python-version:
+    description: Python version used to run surfacelock.
+    required: false
+    default: "3.12"
+
+outputs:
+  changed:
+    description: "\"true\" when the AI surface differs from surface.lock."
+    value: ${{ steps.run.outputs.changed }}
+  errors:
+    description: Number of policy errors.
+    value: ${{ steps.run.outputs.errors }}
+  warnings:
+    description: Number of policy warnings.
+    value: ${{ steps.run.outputs.warnings }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install surfacelock
+      shell: bash
+      run: python -m pip install --quiet "surfacelock==${{ inputs.version }}"
+
+    - name: Run surfacelock check
+      id: run
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        set +e
+        args=(check --format json)
+        if [ "${{ inputs.allow-drift }}" = "true" ]; then
+          args+=(--allow-drift)
+        fi
+        surfacelock "${args[@]}" > "$RUNNER_TEMP/surfacelock.json"
+        status=$?
+        set -e
+
+        python - "$RUNNER_TEMP/surfacelock.json" <<'PY' >> "$GITHUB_OUTPUT"
+        import json, sys
+        try:
+            data = json.load(open(sys.argv[1]))
+        except Exception:
+            print("changed=false")
+            print("errors=0")
+            print("warnings=0")
+            raise SystemExit(0)
+        errors = sum(1 for f in data.get("findings", []) if f["severity"] == "error")
+        warnings = sum(1 for f in data.get("findings", []) if f["severity"] == "warning")
+        print(f"changed={str(data.get('drift', {}).get('changed', False)).lower()}")
+        print(f"errors={errors}")
+        print(f"warnings={warnings}")
+        PY
+
+        {
+          echo "### \U0001f512 surfacelock"
+          echo
+          surfacelock explain || true
+        } >> "$GITHUB_STEP_SUMMARY"
+
+        exit $status
+
+    - name: Post sticky pull-request comment
+      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR: ${{ github.event.pull_request.number }}
+      run: |
+        set -e
+        surfacelock explain > "$RUNNER_TEMP/body.md"
+        marker="<!-- surfacelock-sticky -->"
+        { echo "$marker"; cat "$RUNNER_TEMP/body.md"; } > "$RUNNER_TEMP/comment.md"
+
+        existing=$(gh api "repos/${{ github.repository }}/issues/$PR/comments" \
+          --jq ".[] | select(.body | contains(\"$marker\")) | .id" | head -n1)
+
+        if [ -n "$existing" ]; then
+          gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$existing" \
+            -f body="$(cat "$RUNNER_TEMP/comment.md")"
+        else
+          gh api -X POST "repos/${{ github.repository }}/issues/$PR/comments" \
+            -f body="$(cat "$RUNNER_TEMP/comment.md")"
+        fi

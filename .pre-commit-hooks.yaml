@@ -1,0 +1,32 @@
+# Hooks that surfacelock *provides* to other repositories.
+# Consume with:
+#
+#   repos:
+#     - repo: https://github.com/iggym/surfacelock
+#       rev: v0.1.0
+#       hooks:
+#         - id: surfacelock-check
+- id: surfacelock-check
+  name: surfacelock check
+  description: >-
+    Fail when the AI surface (models, prompts, tool schemas, MCP servers)
+    differs from surface.lock, or when policy is violated.
+  entry: surfacelock check
+  language: python
+  pass_filenames: false
+  always_run: true
+  additional_dependencies: ["pyyaml", "tomli-w", "pathspec"]
+
+# `surfacelock-check` runs `check` — deliberately *not* `check --allow-drift`.
+# Drift must be reviewed, so the fix is to run `surfacelock update` and commit
+# the resulting surface.lock, which is exactly what the second hook automates.
+- id: surfacelock-update
+  name: surfacelock update
+  description: >-
+    Rebuild surface.lock and stage it. Existing model pins are preserved;
+    pass --resolve to deliberately re-pin.
+  entry: surfacelock update
+  language: python
+  pass_filenames: false
+  always_run: true
+  additional_dependencies: ["pyyaml", "tomli-w", "pathspec"]

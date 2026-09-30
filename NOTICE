@@ -1,0 +1,10 @@
+surfacelock
+Copyright 2026 surfacelock contributors
+
+This product includes software developed at the surfacelock project
+(https://github.com/iggym/surfacelock).
+
+The bundled model registry (src/surfacelock/registry/models.json) contains
+factual metadata — model identifiers, providers, retirement dates and list
+prices — gathered from provider documentation. Each entry records its
+`sources` URLs. No provider documentation text is reproduced.
