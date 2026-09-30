@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "crm": {
+      "url": "https://crm.internal.example/mcp",
+      "headers": { "Authorization": "Bearer ${CRM_TOKEN}" }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@0.6.2", "./data"],
+      "env": { "FS_ROOT": "/srv/data" }
+    }
+  }
+}

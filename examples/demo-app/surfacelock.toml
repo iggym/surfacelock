@@ -1,0 +1,9 @@
+# Example policy. Every key here is a default except the allow list.
+[scan]
+ignore = ["build/**"]
+
+[policy]
+fail_on_unpinned = true
+deprecation_warn_days = 90
+deprecation_fail_days = 30
+require_mcp_pinned = true
