@@ -1,0 +1,37 @@
+# Hooks that run on surfacelock's own repository.
+# The hooks surfacelock *provides* live in .pre-commit-hooks.yaml.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+      - id: mypy
+        additional_dependencies: [pyyaml, tomli-w, pathspec]
+        files: ^src/
+
+  - repo: local
+    hooks:
+      - id: surfacelock-self-check
+        name: surfacelock self-check
+        entry: surfacelock check --allow-drift
+        language: system
+        pass_filenames: false
+        always_run: true

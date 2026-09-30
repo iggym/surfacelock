@@ -1,0 +1,101 @@
+site_name: surfacelock
+site_description: >-
+  A lockfile for the AI surface of your codebase — pins models, prompts, tool
+  schemas and MCP servers, and fails CI when they change without review.
+site_url: https://iggym.github.io/surfacelock/
+repo_url: https://github.com/iggym/surfacelock
+repo_name: iggym/surfacelock
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: en
+  logo: https://raw.githubusercontent.com/iggym/surfacelock/main/docs/assets/logo.svg
+  favicon: https://raw.githubusercontent.com/iggym/surfacelock/main/docs/assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Concepts: concepts.md
+  - Detection: detection.md
+  - Configuration: configuration.md
+  - CI: ci.md
+  - Registry: registry.md
+  - Findings:
+      - findings/index.md
+      - UNPINNED_MODEL: findings/UNPINNED_MODEL.md
+      - UNKNOWN_MODEL: findings/UNKNOWN_MODEL.md
+      - MODEL_DEPRECATED: findings/MODEL_DEPRECATED.md
+      - MODEL_RETIRING: findings/MODEL_RETIRING.md
+      - MODEL_RETIRED: findings/MODEL_RETIRED.md
+      - MODEL_DENIED: findings/MODEL_DENIED.md
+      - MODEL_NOT_ALLOWED: findings/MODEL_NOT_ALLOWED.md
+      - PROVIDER_NOT_ALLOWED: findings/PROVIDER_NOT_ALLOWED.md
+      - MCP_INSECURE: findings/MCP_INSECURE.md
+      - MCP_UNPINNED: findings/MCP_UNPINNED.md
+      - PROMPT_TOO_LARGE: findings/PROMPT_TOO_LARGE.md
+      - PROMPT_NO_OWNER: findings/PROMPT_NO_OWNER.md
+      - PROMPT_ID_COLLISION: findings/PROMPT_ID_COLLISION.md
+  - Reference:
+      - reference/index.md
+      - CLI: reference/cli.md
+      - JSON schemas: schemas.md
+      - Python API: python-api.md
+  - FAQ: faq.md
+  - Stability: stability.md
+
+strict: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/iggym/surfacelock
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/surfacelock/
+  generator: false
+
+copyright: >-
+  Copyright 2026 surfacelock contributors · Apache-2.0

@@ -1,0 +1,46 @@
+name: Registry data issue
+description: A model entry is missing, or its dates or prices are wrong.
+title: "[registry] "
+labels: ["registry", "data"]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model identifier
+      placeholder: gpt-4o
+    validations:
+      required: true
+  - type: input
+    id: provider
+    attributes:
+      label: Provider
+      placeholder: openai
+    validations:
+      required: true
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What is wrong?
+      options:
+        - Entry is missing entirely
+        - Retirement date is wrong
+        - Price is wrong
+        - Alias resolves to the wrong snapshot
+        - Context window is wrong
+    validations:
+      required: true
+  - type: input
+    id: correct
+    attributes:
+      label: The correct value
+      placeholder: "retirement: 2026-10-20"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: A link to provider documentation. Required — entries without sources are rejected.
+      placeholder: https://platform.openai.com/docs/deprecations
+    validations:
+      required: true

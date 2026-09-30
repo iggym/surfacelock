@@ -1,0 +1,45 @@
+name: False positive
+description: surfacelock flagged something that is not part of your AI surface.
+title: "[false-positive] "
+labels: ["false-positive", "precision"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Precision is this project's most important property. Thank you for
+        reporting. A tool that cries wolf gets switched off, and a tool that is
+        switched off protects nothing.
+  - type: input
+    id: location
+    attributes:
+      label: File and line
+      placeholder: src/billing/version.py:12
+    validations:
+      required: true
+  - type: input
+    id: string
+    attributes:
+      label: The string that was flagged
+      placeholder: '"1.5.0"'
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What was it flagged as?
+      options: [model, prompt, tool, mcp_server]
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it actually is
+      placeholder: A semantic version string in a changelog helper.
+    validations:
+      required: true
+  - type: checkboxes
+    id: fixture
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to add this to tests/fixtures/tricky/ in a PR

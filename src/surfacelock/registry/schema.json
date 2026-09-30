@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iggym.github.io/surfacelock/schemas/registry.schema.json",
+  "title": "surfacelock model registry",
+  "type": "object",
+  "required": ["_updated", "models"],
+  "additionalProperties": false,
+  "properties": {
+    "_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the registry data was last reviewed."
+    },
+    "alias_patterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Substrings or /regex/ patterns that mark an identifier as floating."
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["provider", "kind", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["chat", "embedding", "rerank", "image", "audio", "deployment"]
+        },
+        "resolved": {
+          "type": "string",
+          "description": "Pinned snapshot identifier, e.g. gpt-4.1-2025-04-14."
+        },
+        "alias_of": {
+          "type": "string",
+          "description": "Another registry key this entry aliases."
+        },
+        "deprecation": { "type": "string", "format": "date" },
+        "retirement": { "type": "string", "format": "date" },
+        "price_in": { "type": "number", "minimum": 0, "description": "USD per 1M input tokens." },
+        "price_out": { "type": "number", "minimum": 0, "description": "USD per 1M output tokens." },
+        "price_cached_in": {
+          "type": "number",
+          "minimum": 0,
+          "description": "USD per 1M cached input tokens."
+        },
+        "context_window": { "type": "integer", "minimum": 1 },
+        "notes": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "format": "uri" }
+        }
+      }
+    }
+  }
+}

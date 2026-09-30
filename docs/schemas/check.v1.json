@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iggym.github.io/surfacelock/schemas/check.v1.json",
+  "title": "surfacelock check output (v1)",
+  "type": "object",
+  "required": ["schema", "surfacelock_version", "ok", "counts", "drift", "findings", "suppressed"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "check.v1" },
+    "surfacelock_version": { "type": "string" },
+    "ok": { "type": "boolean" },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "models": { "type": "integer" },
+        "prompts": { "type": "integer" },
+        "tools": { "type": "integer" },
+        "mcp_servers": { "type": "integer" }
+      }
+    },
+    "drift": {
+      "type": "object",
+      "required": ["changed", "entries"],
+      "properties": {
+        "changed": { "type": "boolean" },
+        "entries": { "type": "array", "items": { "$ref": "#/$defs/drift_entry" } }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "suppressed": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "drift_entry": {
+      "type": "object",
+      "required": ["kind", "action", "name", "detail"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["model", "prompt", "tool", "mcp_server"] },
+        "action": { "type": "string", "enum": ["added", "removed", "changed"] },
+        "name": { "type": "string" },
+        "detail": { "type": "string" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["code", "message", "path", "line", "severity", "suppressed", "docs_url"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "path": { "type": "string" },
+        "line": { "type": "integer", "minimum": 0 },
+        "severity": { "type": "string", "enum": ["error", "warning"] },
+        "suppressed": { "type": "boolean" },
+        "reason": { "type": ["string", "null"] },
+        "docs_url": { "type": "string" }
+      }
+    }
+  }
+}

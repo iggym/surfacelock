@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a new detection rule, command or integration.
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: >-
+        Describe the failure mode or workflow gap, not the implementation.
+        "I cannot tell X" is more useful than "add a flag Y".
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: precision
+    attributes:
+      label: Precision analysis
+      description: >-
+        For a new detection rule: what legitimate code could this match by
+        mistake? surfacelock prefers a miss over a false positive.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

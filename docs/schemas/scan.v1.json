@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iggym.github.io/surfacelock/schemas/scan.v1.json",
+  "title": "surfacelock scan output (v1)",
+  "type": "object",
+  "required": ["schema", "surfacelock_version", "summary", "models", "prompts", "tools", "mcp_servers"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "scan.v1" },
+    "surfacelock_version": { "type": "string" },
+    "summary": {
+      "type": "object",
+      "required": ["models", "prompts", "tools", "mcp_servers", "files_scanned", "files_skipped", "duration_ms"],
+      "properties": {
+        "models": { "type": "integer", "minimum": 0 },
+        "prompts": { "type": "integer", "minimum": 0 },
+        "tools": { "type": "integer", "minimum": 0 },
+        "mcp_servers": { "type": "integer", "minimum": 0 },
+        "files_scanned": { "type": "integer", "minimum": 0 },
+        "files_skipped": { "type": "integer", "minimum": 0 },
+        "duration_ms": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "models": { "type": "array", "items": { "$ref": "#/$defs/model" } },
+    "prompts": { "type": "array", "items": { "$ref": "#/$defs/prompt" } },
+    "tools": { "type": "array", "items": { "$ref": "#/$defs/tool" } },
+    "mcp_servers": { "type": "array", "items": { "$ref": "#/$defs/mcp" } }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "required": ["name", "file", "line", "context", "annotated"],
+      "properties": {
+        "name": { "type": "string" },
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "context": { "type": "string", "enum": ["model", "embedding", "rerank", "image", "audio", "deployment"] },
+        "provider": { "type": ["string", "null"] },
+        "annotated": { "type": "boolean" }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "required": ["id", "path", "line", "sha256", "chars", "approx_tokens", "source"],
+      "properties": {
+        "id": { "type": "string" },
+        "path": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string" },
+        "chars": { "type": "integer", "minimum": 0 },
+        "approx_tokens": { "type": "integer", "minimum": 0 },
+        "source": { "type": "string", "enum": ["annotated", "file", "inline"] }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name", "file", "line", "sha256", "description", "param_keys", "source"],
+      "properties": {
+        "name": { "type": "string" },
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string" },
+        "description": { "type": "string" },
+        "param_keys": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string", "enum": ["json", "yaml", "python-dict", "decorator", "pydantic", "ts-sdk"] }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "required": ["name", "path", "transport", "url", "command", "args", "env_keys", "sha256"],
+      "properties": {
+        "name": { "type": "string" },
+        "path": { "type": "string" },
+        "transport": { "type": "string" },
+        "url": { "type": "string" },
+        "command": { "type": "string" },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "env_keys": { "type": "array", "items": { "type": "string" } },
+        "sha256": { "type": "string" }
+      }
+    }
+  }
+}

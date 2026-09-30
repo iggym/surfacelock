@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "crm": {
+      "transport": "http",
+      "url": "https://crm.internal.example/mcp",
+      "headers": {
+        "Authorization": "Bearer sk-live-DO-NOT-RECORD-THIS-VALUE",
+        "X-Tenant": "acme"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/data"],
+      "env": {
+        "FS_TOKEN": "super-secret-token-value",
+        "LOG_LEVEL": "debug"
+      }
+    },
+    "git-pinned": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git@1.2.3"],
+      "env": {}
+    }
+  }
+}
